@@ -30,7 +30,6 @@ public class Main {
     // This controls the name of the database;
     private static String dbName = "codeup_test_db";
 
-
     // Names of Columns
     private static String artist;
     private static String name;
@@ -40,38 +39,33 @@ public class Main {
 
     private static String row;
 
-
     private static BufferedReader csvReader;
 
-    static {
+    public static void main(String[] args) throws IOException {
+
+        // Instantiate BufferedReader
         try {
             csvReader = new BufferedReader(new FileReader(String.valueOf(p)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-
-    public static void main(String[] args) throws IOException {
-
-        String dbToUse = "USE " + dbName + ";";
 
         // Use this database add's to beginning of SQL file.
+        String dbToUse = "USE " + dbName + ";";
+
         try {
             Files.write(op, (dbToUse + System.lineSeparator()).getBytes(StandardCharsets.UTF_8),StandardOpenOption.CREATE,StandardOpenOption.APPEND);
         } catch(IOException e) {
             e.printStackTrace();
         }
 
-
+        // If file line is not null, readLine and perform actions.
         while ((row = csvReader.readLine()) != null) {
             String[] data = row.split(",");
 
-
+            // Get artist
             int iend = row.indexOf(",");
 
-
-            // Get artist
             if (iend != -1) {
                 artist = row.substring(0,iend);
                 row = row.substring(iend + 1);
@@ -101,7 +95,6 @@ public class Main {
                 row = row.substring(iend);
             };
 
-
             // Get sales
             iend = row.indexOf(",");
 
@@ -114,19 +107,12 @@ public class Main {
             String outputStr = "INSERT INTO albums (artist, name, release_date, sales, genre) " +
                     "VALUES ('" + artist + "','" + name + "','" + release_date + "','" + sales + "','" + genre + "');";
 
-
             // Write to SQL file in SQL directory the generated output string
             try {
-                Files.write(op, (outputStr + System.lineSeparator()).getBytes(StandardCharsets.UTF_8),StandardOpenOption.CREATE,StandardOpenOption.APPEND);
+                Files.writeString(op, outputStr + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.APPEND);
             } catch(IOException e) {
                 e.printStackTrace();
             }
-
         }
-
-
-
     }
-
-
 }
